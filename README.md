@@ -2,7 +2,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
 
@@ -67,6 +67,87 @@ You've successfully run and modified your React Native App. :partying_face:
 # Troubleshooting
 
 If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Software design and architecture
+
+Follow MVVM pattern with clean architecture concept
+
+In this diagram, the arrows (-->) represent the direction of dependencies. The outer layers (Frameworks and Drivers, Interfaces Adapter) depend on the inner layers (Use-Cases, Domain), but not the other way around. This is a key principle of Clean Architecture.
+
+Remember, the key principle of Clean Architecture is that dependencies point inwards. The inner layers should not depend on the outer layers. This allows the inner layers (which contain the core business logic) to be isolated and independent from the outer layers (which handle things like data storage, UI, etc.).
+
+```mermaid
+graph LR
+    subgraph Frameworks And Driver
+        Services[Services]
+
+        subgraph UI layer
+            UI[Screens]
+            View[Views]
+
+            subgraph Interfaces Adapter layer
+                Controller[Controller Hooks]
+                Gateway[APIs/ Repositories]
+
+                %% The Use-Case layer in Clean Architecture represents the specific business rules of an application. It encapsulates and implements all of the use cases of a system. The Use-Case layer doesn't know anything about the outside world, it just receives data, applies the business rules, and returns the result.
+                subgraph Application layer
+                    UC[Use-Cases]
+
+                    subgraph Domain layer
+                        Entity[Domain]
+                    end
+                end
+            end
+        end
+    end
+
+    UI -->|controlled by| Controller
+    UI -->|render UI| View
+
+    Controller -->|prepare input of UseCase| Gateway
+    Controller -->|trigger| UC
+
+    UC -->|Core Business| Entity
+```
+
+# Folder Structure
+
+src
+├── app
+│ ├── hooks
+│ ├── implementation (Repositories/ Gateway)
+│ └── ui
+│
+├── core
+│ ├── use-cases
+│ ├── domain
+│ └── interface
+│
+├── services
+│
+└── utils
+
+- src: This is the root directory where developer put code here.
+
+  - app: This our implementation contains
+
+    - hooks which handles the interaction between the UI and the business logic.
+
+    - implementation (Repositories/ Gateway): the data sources ( Todo service, ...),
+
+    - ui: contains all the UI related code.
+
+  - core: domain, use-case and interface declaration
+
+    - domain: contains Entities and handle logic between them for whole application.
+
+    - use-cases: contains the use cases of application, which interact with the Entity.
+
+    - interface: abstraction layer that is a technique separate domain layer and concrete layer.
+
+  - services: contains service-related code, such as network requests, logging, storage, etc.
+
+  - utils: contains utility functions that are used across the application.
 
 # Learn More
 
