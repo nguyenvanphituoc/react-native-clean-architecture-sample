@@ -112,6 +112,7 @@ graph LR
 
 # Folder Structure
 
+```code
 src
 ├── app
 │ ├── hooks
@@ -126,6 +127,7 @@ src
 ├── services
 │
 └── utils
+```
 
 - src: This is the root directory where developer put code here.
 
